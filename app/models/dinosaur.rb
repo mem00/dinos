@@ -1,3 +1,3 @@
 class Dinosaur < ApplicationRecord
-  belongs_to :cage
+  belongs_to :cage, counter_cache: true
 end
