@@ -46,6 +46,6 @@ class CagesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def cage_params
-      params.fetch(:cage, {})
+      params.fetch(:cage, {}).permit(:power_status, :contains_carnivores, :species)
     end
 end
