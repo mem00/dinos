@@ -12,6 +12,29 @@ class DinosaursControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get all t-rexs" do
+    get "/dinosaurs?query=tyrannosaurus"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned not t-rex") unless res["species"] == "tyrannosaurus"
+    end
+    assert true
+  end
+
+  test "should get all ankys" do
+    get "/dinosaurs?query=ankylosaurus"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned not t-rex") unless res["species"] == "ankylosaurus"
+    end
+    assert true
+  end
+
+  test "should return all if query is bad" do
+    get "/dinosaurs?query=madeup"
+    assert @response.body.present?
+  end
+
   test "should create dinosaur" do
     assert_difference('Dinosaur.count') do
       post dinosaurs_url, params: { dinosaur: { name: "mike", species: "ankylosaurus", cage_id: 1} }, as: :json

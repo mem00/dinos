@@ -3,7 +3,12 @@ class DinosaursController < ApplicationController
 
   # GET /dinosaurs
   def index
-    @dinosaurs = Dinosaur.all
+    query = params[:query].try(:downcase)
+    if query.present? && Dinosaur::species[query].present?
+      @dinosaurs = Dinosaur.where(species: query)
+    else
+      @dinosaurs = Dinosaur.all
+    end
 
     render json: @dinosaurs
   end
