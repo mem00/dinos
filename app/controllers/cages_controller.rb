@@ -21,21 +21,18 @@ class CagesController < ApplicationController
   # POST /cages
   def create
     @cage = Cage.new(cage_params)
-
-    if @cage.save
-      render json: @cage, status: :created, location: @cage
-    else
-      render json: @cage.errors, status: :unprocessable_entity
-    end
+    @cage.save
+    render json: @cage, status: :created, location: @cage
+  rescue => e
+    render json: e, status: :unprocessable_entity
   end
 
   # PATCH/PUT /cages/1
   def update
-    if @cage.update(cage_params)
-      render json: @cage
-    else
-      render json: @cage.errors, status: :unprocessable_entity
-    end
+    @cage.update(cage_params)
+    render json: @cage
+  rescue => e
+    render json: e, status: :unprocessable_entity
   end
 
   # DELETE /cages/1
