@@ -4,7 +4,13 @@ class CagesController < ApplicationController
 
   # GET /cages
   def index
-    @cages = Cage.all
+    query = params[:query]
+    if query.present?
+      @cages = Cage.active if query == "active"
+      @cages = Cage.down if query == "down"
+    else 
+      @cages = Cage.all
+    end
 
     render json: @cages
   end

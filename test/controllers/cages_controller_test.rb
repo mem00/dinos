@@ -10,6 +10,24 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get down cages" do
+    get "/cages?query=down"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned active cage") unless res["power_status"] == "down"
+    end
+    assert true
+  end
+
+  test "should get active cages" do
+    get "/cages?query=active"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned down cage") unless res["power_status"] == "active"
+    end
+    assert true  
+  end
+
   test "should create cage" do
     assert_difference('Cage.count') do
       post cages_url, params: { cage: {  } }, as: :json
