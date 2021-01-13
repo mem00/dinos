@@ -46,6 +46,8 @@ class CagesController < ApplicationController
   def toggle_power
     @cage.down? ? @cage.active! : @cage.down!
     render json: @cage
+  rescue => e
+    render json: e, status: :unprocessable_entity
   end
 
   private
