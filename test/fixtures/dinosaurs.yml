@@ -7,7 +7,7 @@
 one: 
   id: 1
   name: Phil
-  species: Ankylosaurus
+  species: ankylosaurus
   cage_id: 1
 
 # column: value

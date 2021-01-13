@@ -12,7 +12,7 @@ class DinosaursControllerTest < ActionDispatch::IntegrationTest
 
   test "should create dinosaur" do
     assert_difference('Dinosaur.count') do
-      post dinosaurs_url, params: { dinosaur: { name: "mike", species: "Ankylosaurus", cage_id: 1} }, as: :json
+      post dinosaurs_url, params: { dinosaur: { name: "mike", species: "ankylosaurus", cage_id: 1} }, as: :json
     end
 
     assert_response 201

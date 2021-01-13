@@ -1,5 +1,6 @@
 class CagesController < ApplicationController
-  before_action :set_cage, only: [:show, :update, :destroy]
+  before_action :set_cage, only: [:show, :show_dinosaurs, :update, :destroy, :toggle_power]
+  before_action :check_empty, only: [:toggle_power]
 
   # GET /cages
   def index
@@ -11,6 +12,10 @@ class CagesController < ApplicationController
   # GET /cages/1
   def show
     render json: @cage
+  end
+
+  def show_dinosaurs
+    render json: @cage.dinosaurs
   end
 
   # POST /cages
@@ -38,14 +43,24 @@ class CagesController < ApplicationController
     @cage.destroy
   end
 
+  def toggle_power
+    @cage.down? ? @cage.active! : @cage.down!
+    render json: @cage
+  rescue => e
+    render json: e, status: :unprocessable_entity
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_cage
       @cage = Cage.find(params[:id])
     end
 
+    def check_empty
+      return head 403 unless @cage.dinosaurs_count == 0
+    end
     # Only allow a trusted parameter "white list" through.
     def cage_params
-      params.fetch(:cage, {})
+      params.fetch(:cage, {}).permit(:power_status, :contains_carnivores, :species)
     end
 end
