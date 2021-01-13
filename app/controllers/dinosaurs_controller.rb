@@ -15,22 +15,22 @@ class DinosaursController < ApplicationController
 
   # POST /dinosaurs
   def create
+    dinosaur_params[:species].downcase!
     @dinosaur = Dinosaur.new(dinosaur_params)
-
-    if @dinosaur.save
-      render json: @dinosaur, status: :created, location: @dinosaur
-    else
-      render json: @dinosaur.errors, status: :unprocessable_entity
-    end
+    @dinosaur.is_carnivore = @dinosaur.carnivore?
+    @dinosaur.save
+    render json: @dinosaur, status: :created, location: @dinosaur
+  rescue => e
+    render json: e, status: :unprocessable_entity
   end
 
   # PATCH/PUT /dinosaurs/1
   def update
-    if @dinosaur.update(dinosaur_params)
-      render json: @dinosaur
-    else
-      render json: @dinosaur.errors, status: :unprocessable_entity
-    end
+    dinosaur_params[:species].downcase! if dinosaur_params[:species].present?
+    @dinosaur.update(dinosaur_params)
+    render json: @dinosaur
+  rescue => e
+    render json: e, status: :unprocessable_entity
   end
 
   # DELETE /dinosaurs/1

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_12_215628) do
+ActiveRecord::Schema.define(version: 2021_01_13_164655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 2021_01_12_215628) do
     t.bigint "cage_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_carnivore", default: false
     t.index ["cage_id"], name: "index_dinosaurs_on_cage_id"
   end
 
