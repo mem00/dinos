@@ -1,5 +1,5 @@
 class CagesController < ApplicationController
-  before_action :set_cage, only: [:show, :update, :destroy, :toggle_power]
+  before_action :set_cage, only: [:show, :show_dinosaurs, :update, :destroy, :toggle_power]
   before_action :check_empty, only: [:toggle_power]
 
   # GET /cages
@@ -12,6 +12,10 @@ class CagesController < ApplicationController
   # GET /cages/1
   def show
     render json: @cage
+  end
+
+  def show_dinosaurs
+    render json: @cage.dinosaurs
   end
 
   # POST /cages

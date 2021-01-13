@@ -19,6 +19,11 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show cage" do
+    get show_dinosaurs_cage_url(@cage), as: :json
+    assert_response :success
+  end
+
+  test "should show dinosaurs" do
     get cage_url(@cage), as: :json
     assert_response :success
   end
@@ -53,4 +58,5 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
     patch toggle_power_cage_url(@cage_four)
     assert JSON.parse(@response.body)["power_status"] == "down"
   end
+
 end
