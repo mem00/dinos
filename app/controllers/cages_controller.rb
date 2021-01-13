@@ -4,10 +4,9 @@ class CagesController < ApplicationController
 
   # GET /cages
   def index
-    query = params[:query]
-    if query.present?
-      @cages = Cage.active if query == "active"
-      @cages = Cage.down if query == "down"
+    query = params[:query].try(:downcase)
+    if query.present? && Cage::power_statuses[query].present?
+      @cages = query == "active" ? Cage.active : Cage.down
     else 
       @cages = Cage.all
     end

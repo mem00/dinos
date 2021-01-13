@@ -28,6 +28,11 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
     assert true  
   end
 
+  test "should return all if query is bad" do
+    get "/cages?query=madeup"
+    assert @response.body.present?
+  end
+
   test "should create cage" do
     assert_difference('Cage.count') do
       post cages_url, params: { cage: {  } }, as: :json
