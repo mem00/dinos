@@ -20,3 +20,29 @@ three:
 four:
   id: 4
   power_status: active
+
+herb:
+  id: 5
+  power_status: active
+  contains_carnivores: false
+  dinosaurs_count: 1
+
+herb_full:
+  id: 6
+  power_status: active
+  contains_carnivores: false
+  dinosaurs_count: 3
+
+trex:
+  id: 7
+  power_status: active
+  contains_carnivores: true
+  species: tyrannosaurus
+  dinosaurs_count: 1
+
+veloc: 
+  id: 8
+  power_status: active
+  contains_carnivores: true
+  species: velociraptor
+  dinosaurs_count: 1
