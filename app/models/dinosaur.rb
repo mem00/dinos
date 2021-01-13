@@ -1,7 +1,7 @@
 class Dinosaur < ApplicationRecord
   belongs_to :cage, counter_cache: true
 
-  enum species = {
+  enum species: {
     tyrannosaurus: 'tyrannosaurus',
     velociraptor: 'velociraptor',
     spinosaurus: 'spinosaurus',

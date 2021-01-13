@@ -8,5 +8,15 @@ one:
   id: 1
 # column: value
 #
-# two: {}
+two:
+  id: 2
 # column: value
+
+three: 
+  id: 3
+  power_status: active
+  dinosaurs_count: 1
+
+four:
+  id: 4
+  power_status: active
