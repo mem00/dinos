@@ -3,6 +3,8 @@ require 'test_helper'
 class DinosaursControllerTest < ActionDispatch::IntegrationTest
   setup do
     @dinosaur = dinosaurs(:one)
+    @tina = dinosaurs(:tina)
+    @roger = dinosaurs(:roger)
   end
 
   test "should get index" do
@@ -55,4 +57,40 @@ class DinosaursControllerTest < ActionDispatch::IntegrationTest
 
     assert_response 204
   end
+
+  test "put herbivore in herbivore cage" do
+    patch put_in_cage_dinosaur_url(@tina), params: { dinosaur: { cage_id: 5 } }, as: :json
+    assert_response 200
+  end
+
+  test "can't move herbivore to full herbivore cage" do
+    patch put_in_cage_dinosaur_url(@tina), params: { dinosaur: { cage_id: 6 } }, as: :json
+    assert_response 422
+  end
+
+  test "can't move herbivore to carnivore cage" do
+    patch put_in_cage_dinosaur_url(@tina), params: { dinosaur: { cage_id: 7 } }, as: :json
+    assert_response 422
+  end
+
+  test "can't move to down cage" do
+    patch put_in_cage_dinosaur_url(@tina), params: { dinosaur: { cage_id: 1 } }, as: :json
+    assert_response 422
+  end
+
+  test "put carnivore in cage with species" do
+    patch put_in_cage_dinosaur_url(@roger), params: { dinosaur: { cage_id: 7 } }, as: :json
+    assert_response 200  
+  end
+
+  test "can't put carnivore in cage with different carnivore species" do
+    patch put_in_cage_dinosaur_url(@roger), params: { dinosaur: { cage_id: 8 } }, as: :json
+    assert_response 422
+  end
+
+  test "can't put carnivore in cage with herbivore" do
+    patch put_in_cage_dinosaur_url(@roger), params: { dinosaur: { cage_id: 5 } }, as: :json
+    assert_response 422
+  end
+
 end

@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :dinosaurs
+  resources :dinosaurs do
+    member do
+      patch :put_in_cage
+    end
+  end
   resources :cages do 
     member do
       patch :toggle_power

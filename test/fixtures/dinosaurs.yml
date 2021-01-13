@@ -10,7 +10,14 @@ one:
   species: ankylosaurus
   cage_id: 1
 
-# column: value
-#
-# two: {}
-# column: value
+tina:
+  id: 2
+  name: Tina
+  species: ankylosaurus
+  is_carnivore: false
+
+roger:
+  id: 3
+  name: Roger
+  species: tyrannosaurus
+  is_carnivore: true
