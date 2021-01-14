@@ -73,7 +73,7 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
   test "can't toggle off when dino in cage" do
     @cage_three = cages(:three)
     patch toggle_power_cage_url(@cage_three)
-    assert_response 403
+    assert_response 422
   end
 
   test "toggle to down" do

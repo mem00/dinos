@@ -1,6 +1,5 @@
 class CagesController < ApplicationController
   before_action :set_cage, only: [:show, :show_dinosaurs, :update, :destroy, :toggle_power]
-  before_action :check_empty, only: [:toggle_power]
 
   # GET /cages
   def index
@@ -46,6 +45,7 @@ class CagesController < ApplicationController
   end
 
   def toggle_power
+    raise "can't power off, not empty" unless @cage.is_empty?
     @cage.down? ? @cage.active! : @cage.down!
     render json: @cage
   rescue => e
@@ -58,9 +58,6 @@ class CagesController < ApplicationController
       @cage = Cage.find(params[:id])
     end
 
-    def check_empty
-      return head 403 unless @cage.dinosaurs_count == 0
-    end
     # Only allow a trusted parameter "white list" through.
     def cage_params
       params.fetch(:cage, {}).permit(:power_status, :contains_carnivores, :species)
