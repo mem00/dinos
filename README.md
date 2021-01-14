@@ -1,24 +1,17 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+ruby 2.5.1
+rails 6.0.3.4
 
-Things you may want to cover:
+Run `bundle install`
 
-* Ruby version
+Set up database `rake db:create`
+Run migrations `rake db:migrate`
 
-* System dependencies
+Run tests `rake test`
 
-* Configuration
+What to consider for concurrent environment:
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Move conditions to database eg put check on dinosaurs_count in db
+Concurrency control for shared resources (prevent race conditions, resource starvation, and deadlocks) eg putting a dinosaur in a cage that was just turned off
+Possible solution for above example: pessimistic or optimistic locking 
