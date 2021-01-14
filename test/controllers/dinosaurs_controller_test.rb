@@ -37,29 +37,29 @@ class DinosaursControllerTest < ActionDispatch::IntegrationTest
 
   test "should create dinosaur" do
     assert_difference('Dinosaur.count') do
-      post dinosaurs_url, params: { dinosaur: { name: "mike", species: "ankylosaurus", cage_id: 1} }, as: :json
+      post dinosaurs_url, params: { dinosaur: { name: "mike", species: "ankylosaurus", cage_id: 9} }, as: :json
     end
 
     assert_response 201
   end
 
   test "should throw error cause no name" do
-    post dinosaurs_url, params: { dinosaur: { species: "ankylosaurus", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { species: "ankylosaurus", cage_id: 9} }, as: :json
     assert_response 422
   end
 
   test "should create carnivorous dinosaur" do
-    post dinosaurs_url, params: { dinosaur: { name: "sarah", species: "Tyrannosaurus", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { name: "sarah", species: "Tyrannosaurus", cage_id: 9} }, as: :json
     assert JSON.parse(@response.body)["is_carnivore"]
   end
 
   test "should create herbivore dinosaur" do
-    post dinosaurs_url, params: { dinosaur: { name: "sasha", species: "triceratops", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { name: "sasha", species: "triceratops"} }, as: :json
     assert_not JSON.parse(@response.body)["is_carnivore"]
   end
 
   test "can't create dinosaur with invalid species" do
-    post dinosaurs_url, params: { dinosaur: { name: "moose", species: "bulldog", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { name: "moose", species: "bulldog"} }, as: :json
     assert_response 422
   end
 
