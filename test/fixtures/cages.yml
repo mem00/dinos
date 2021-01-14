@@ -46,3 +46,7 @@ veloc:
   contains_carnivores: true
   species: velociraptor
   dinosaurs_count: 1
+
+misc:
+  id: 9
+  power_status: active

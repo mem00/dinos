@@ -12,31 +12,54 @@ class DinosaursControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get all t-rexs" do
+    get "/dinosaurs?query=tyrannosaurus"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned not t-rex") unless res["species"] == "tyrannosaurus"
+    end
+    assert true
+  end
+
+  test "should get all ankys" do
+    get "/dinosaurs?query=ankylosaurus"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned not t-rex") unless res["species"] == "ankylosaurus"
+    end
+    assert true
+  end
+
+  test "should return all if query is bad" do
+    get "/dinosaurs?query=madeup"
+    assert @response.body.present?
+  end
+
   test "should create dinosaur" do
     assert_difference('Dinosaur.count') do
-      post dinosaurs_url, params: { dinosaur: { name: "mike", species: "ankylosaurus", cage_id: 1} }, as: :json
+      post dinosaurs_url, params: { dinosaur: { name: "mike", species: "ankylosaurus", cage_id: 9} }, as: :json
     end
 
     assert_response 201
   end
 
   test "should throw error cause no name" do
-    post dinosaurs_url, params: { dinosaur: { species: "ankylosaurus", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { species: "ankylosaurus", cage_id: 9} }, as: :json
     assert_response 422
   end
 
   test "should create carnivorous dinosaur" do
-    post dinosaurs_url, params: { dinosaur: { name: "sarah", species: "Tyrannosaurus", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { name: "sarah", species: "Tyrannosaurus", cage_id: 9} }, as: :json
     assert JSON.parse(@response.body)["is_carnivore"]
   end
 
   test "should create herbivore dinosaur" do
-    post dinosaurs_url, params: { dinosaur: { name: "sasha", species: "triceratops", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { name: "sasha", species: "triceratops"} }, as: :json
     assert_not JSON.parse(@response.body)["is_carnivore"]
   end
 
   test "can't create dinosaur with invalid species" do
-    post dinosaurs_url, params: { dinosaur: { name: "moose", species: "bulldog", cage_id: 1} }, as: :json
+    post dinosaurs_url, params: { dinosaur: { name: "moose", species: "bulldog"} }, as: :json
     assert_response 422
   end
 

@@ -10,6 +10,29 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get down cages" do
+    get "/cages?query=down"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned active cage") unless res["power_status"] == "down"
+    end
+    assert true
+  end
+
+  test "should get active cages" do
+    get "/cages?query=active"
+    results = JSON.parse(@response.body)
+    results.each do |res|
+      flunk("returned down cage") unless res["power_status"] == "active"
+    end
+    assert true  
+  end
+
+  test "should return all if query is bad" do
+    get "/cages?query=madeup"
+    assert @response.body.present?
+  end
+
   test "should create cage" do
     assert_difference('Cage.count') do
       post cages_url, params: { cage: {  } }, as: :json
@@ -50,7 +73,7 @@ class CagesControllerTest < ActionDispatch::IntegrationTest
   test "can't toggle off when dino in cage" do
     @cage_three = cages(:three)
     patch toggle_power_cage_url(@cage_three)
-    assert_response 403
+    assert_response 422
   end
 
   test "toggle to down" do

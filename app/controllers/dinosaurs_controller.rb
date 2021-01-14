@@ -3,7 +3,12 @@ class DinosaursController < ApplicationController
 
   # GET /dinosaurs
   def index
-    @dinosaurs = Dinosaur.all
+    query = params[:query].try(:downcase)
+    if query.present? && Dinosaur::species[query].present?
+      @dinosaurs = Dinosaur.where(species: query)
+    else
+      @dinosaurs = Dinosaur.all
+    end
 
     render json: @dinosaurs
   end
@@ -15,19 +20,22 @@ class DinosaursController < ApplicationController
 
   # POST /dinosaurs
   def create
-    dinosaur_params[:species].downcase!
-    @dinosaur = Dinosaur.new(dinosaur_params)
-    @dinosaur.is_carnivore = @dinosaur.carnivore?
-    @dinosaur.save
-    render json: @dinosaur, status: :created, location: @dinosaur
+    ActiveRecord::Base.transaction do
+      dinosaur_params[:species].downcase!
+      @dinosaur = Dinosaur.new(dinosaur_params.except(:cage_id))
+      @dinosaur.is_carnivore = @dinosaur.carnivore?
+      @cage = Cage.find(dinosaur_params[:cage_id])
+      @dinosaur = MoveDinosaur.move_to_cage(@dinosaur, @cage)
+      @dinosaur.save!
+      render json: @dinosaur, status: :created, location: @dinosaur
+    end
   rescue => e
     render json: e, status: :unprocessable_entity
   end
 
   # PATCH/PUT /dinosaurs/1
   def update
-    dinosaur_params[:species].downcase! if dinosaur_params[:species].present?
-    @dinosaur.update(dinosaur_params)
+    @dinosaur.update!(dinosaur_update_params)
     render json: @dinosaur
   rescue => e
     render json: e, status: :unprocessable_entity
@@ -39,35 +47,12 @@ class DinosaursController < ApplicationController
   end
 
   def put_in_cage
-    @cage = Cage.find(put_in_cage_params[:cage_id])
-    raise 'cage is full' unless @cage.has_space?
-    if @cage.is_empty?
-      raise 'cage is down' if @cage.down?
-      @dinosaur.cage = @cage
-      if @dinosaur.is_carnivore?
-        @cage.contains_carnivores = true
-        @cage.species = @dinosaur.species
-      else
-        @cage.contains_carnivores = false
-      end
-      @cage.save!
-    else
-      if @dinosaur.is_carnivore?
-        if @cage.contains_carnivores?
-          @cage.species == @dinosaur.species ? @dinosaur.cage = @cage : raise('carnivorous must be of same species')
-        else
-          raise 'cannot put carnivore in herbivore cage'
-        end
-      else
-        if @cage.contains_carnivores? 
-          raise 'cannot put herbivore in carnivore cage'
-        else
-          @dinosaur.cage = @cage
-        end
-      end
+    ActiveRecord::Base.transaction do
+      @cage = Cage.find(put_in_cage_params[:cage_id])
+      @dinosaur = MoveDinosaur.move_to_cage(@dinosaur, @cage)
+      @dinosaur.save!
+      render json: @dinosaur
     end
-    @dinosaur.save!
-    render json: @dinosaur
   rescue => e
     render json: e, status: :unprocessable_entity
   end
@@ -81,6 +66,10 @@ class DinosaursController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def dinosaur_params
       params.fetch(:dinosaur, {}).permit(:name, :species, :cage_id)
+    end
+
+    def dinosaur_update_params
+      params.fetch(:dinosaur, {}).permit(:name)
     end
 
     def put_in_cage_params
