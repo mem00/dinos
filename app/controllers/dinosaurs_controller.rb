@@ -33,7 +33,7 @@ class DinosaursController < ApplicationController
 
   # PATCH/PUT /dinosaurs/1
   def update
-    @dinosaur.update(dinosaur_update_params)
+    @dinosaur.update!(dinosaur_update_params)
     render json: @dinosaur
   rescue => e
     render json: e, status: :unprocessable_entity

@@ -34,7 +34,7 @@ class CagesController < ApplicationController
 
   # PATCH/PUT /cages/1
   def update
-    @cage.update(cage_params)
+    @cage.update!(cage_params)
     render json: @cage
   rescue => e
     render json: e, status: :unprocessable_entity
