@@ -20,13 +20,15 @@ class DinosaursController < ApplicationController
 
   # POST /dinosaurs
   def create
-    dinosaur_params[:species].downcase!
-    @dinosaur = Dinosaur.new(dinosaur_params.except(:cage_id))
-    @dinosaur.is_carnivore = @dinosaur.carnivore?
-    @cage = Cage.find(dinosaur_params[:cage_id])
-    @dinosaur = MoveDinosaur.move_to_cage(@dinosaur, @cage)
-    @dinosaur.save!
-    render json: @dinosaur, status: :created, location: @dinosaur
+    ActiveRecord::Base.transaction do
+      dinosaur_params[:species].downcase!
+      @dinosaur = Dinosaur.new(dinosaur_params.except(:cage_id))
+      @dinosaur.is_carnivore = @dinosaur.carnivore?
+      @cage = Cage.find(dinosaur_params[:cage_id])
+      @dinosaur = MoveDinosaur.move_to_cage(@dinosaur, @cage)
+      @dinosaur.save!
+      render json: @dinosaur, status: :created, location: @dinosaur
+    end
   rescue => e
     render json: e, status: :unprocessable_entity
   end
@@ -45,10 +47,12 @@ class DinosaursController < ApplicationController
   end
 
   def put_in_cage
-    @cage = Cage.find(put_in_cage_params[:cage_id])
-    @dinosaur = MoveDinosaur.move_to_cage(@dinosaur, @cage)
-    @dinosaur.save!
-    render json: @dinosaur
+    ActiveRecord::Base.transaction do
+      @cage = Cage.find(put_in_cage_params[:cage_id])
+      @dinosaur = MoveDinosaur.move_to_cage(@dinosaur, @cage)
+      @dinosaur.save!
+      render json: @dinosaur
+    end
   rescue => e
     render json: e, status: :unprocessable_entity
   end
