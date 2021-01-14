@@ -26,7 +26,7 @@ class CagesController < ApplicationController
   # POST /cages
   def create
     @cage = Cage.new(cage_params)
-    @cage.save
+    @cage.save!
     render json: @cage, status: :created, location: @cage
   rescue => e
     render json: e, status: :unprocessable_entity
